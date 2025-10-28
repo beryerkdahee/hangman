@@ -1,0 +1,175 @@
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
+
+public class Main {
+    private static final int MAX_ERRORS = 6;
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        launchGame(in);
+    }
+
+    private static void launchGame(Scanner in) {
+        while (true) {
+            boolean isGameStarting = readAndValidateYesOrNo(in);
+            if (isGameStarting) playGame(in);
+            else {
+                System.out.println("Выход из программы.");
+                break;
+            }
+        }
+    }
+
+    private static boolean readAndValidateYesOrNo(Scanner in) {
+        Set<String> YES_SET = Set.of("д", "да", "y", "yes");
+        Set<String> NO_SET = Set.of("н", "нет", "n", "no");
+        while (true) {
+            System.out.print("Начать новую игру? ");
+            String input = in.nextLine().trim().toLowerCase(Locale.ROOT);
+            if (input.isEmpty()) {
+                System.out.println("Вы ничего не ввели!");
+                continue;
+            }
+            if (YES_SET.contains(input)) return true;
+            else if (NO_SET.contains(input)) return false;
+            else System.out.println("Некорректный ввод.");
+        }
+    }
+
+    private static void playGame(Scanner in) {
+        int errorCount = 0;
+        String hiddenWord = getHiddenWord();
+        boolean isGameLost = false;
+        boolean isGameWon = false;
+        Set<Character> rightLetters = new HashSet<>();
+        Set<Character> usedLetters = new TreeSet<>();
+        while (!isGameLost && !isGameWon) {
+            drawHangman(errorCount);
+            drawBoard(hiddenWord, rightLetters);
+            if (!usedLetters.isEmpty()) drawUsedLetters(usedLetters);
+            char suggestedLetter = readAndValidateLetter(in);
+            boolean isLetterRight = checkLetter(hiddenWord, suggestedLetter);
+            if (usedLetters.contains(suggestedLetter)) {
+                System.out.println("Вы уже указывали эту букву!");
+                System.out.println();
+                continue;
+            }
+            else usedLetters.add(suggestedLetter);
+            if (!isLetterRight) errorCount++;
+            else rightLetters.add(suggestedLetter);
+            isGameLost = checkLosing(errorCount);
+            isGameWon = checkWinning(hiddenWord, rightLetters);
+            System.out.println();
+        }
+        if (isGameLost) {
+            drawHangman(errorCount);
+            drawFinalWords(hiddenWord, false);
+        } else {
+            drawBoard(hiddenWord, rightLetters);
+            drawFinalWords(hiddenWord, true);
+        }
+        System.out.println();
+    }
+
+    private static String getHiddenWord() {
+        List<String> words = loadWordsFromFile();
+        Random random = new Random();
+        return words.get(random.nextInt(words.size()));
+    }
+
+    private static List<String> loadWordsFromFile() {
+        Path wordsFilePath = Paths.get("resources/words.txt");
+        try {
+            List<String> wordsFromFile = Files.readAllLines(wordsFilePath, StandardCharsets.UTF_8)
+                    .stream().map(String::trim).map(String::toLowerCase)
+                    .filter(word -> !word.isEmpty()).toList();
+            if (wordsFromFile.isEmpty()) throw new IOException();
+            return wordsFromFile;
+
+        } catch (IOException e) {
+            String wordsAbsolutePath = wordsFilePath.toAbsolutePath().toString();
+            System.out.println("Файл со списком слов по пути \"" + wordsAbsolutePath + "\" пуст или не обнаружен. " +
+                    "Будут использоваться служебные слова.");
+            return Arrays.asList("кентавр", "виселица", "клавиатура", "пластик", "стажировка");
+        }
+    }
+
+    private static char readAndValidateLetter(Scanner in) {
+        while (true) {
+            System.out.print("Введите предполагаемую букву: ");
+            String input = in.nextLine().trim().toLowerCase(Locale.ROOT);
+            if (input.isEmpty()) {
+                System.out.println("Вы ничего не ввели!");
+                continue;
+            }
+            if (input.length() > 1) {
+                System.out.println("Вы ввели больше одного символа!");
+                continue;
+            }
+            char letter = input.charAt(0);
+            if ((letter >= 'а' && letter <= 'я') || letter == 'ё') return letter;
+            else System.out.println("Вы ввели не русскую букву!");
+        }
+    }
+
+    private static void drawHangman(int errorCount) {
+        String[] hangmanStages = {
+                "— — — —\n|     |\n|\n|\n|\n|",
+                "— — — —\n|     |\n|     o\n|\n|\n|",
+                "— — — —\n|     |\n|     o\n|     O\n|\n|",
+                "— — — —\n|     |\n|     o\n|    /O\n|\n|",
+                "— — — —\n|     |\n|     o\n|    /O\\\n|\n|",
+                "— — — —\n|     |\n|     o\n|    /O\\\n|    /\n|",
+                "— — — —\n|     |\n|     o\n|    /O\\\n|    / \\\n|"};
+        System.out.println(hangmanStages[errorCount]);
+        System.out.println();
+    }
+
+    private static void drawBoard(String hiddenWord, Set<Character> rightLetter) {
+        for (char letter : hiddenWord.toCharArray()) {
+            if (rightLetter.contains(letter)) System.out.print(letter + " ");
+            else System.out.print("_ ");
+        }
+        System.out.println();
+        System.out.println();
+    }
+
+    private static boolean checkLetter(String hiddenWord, char suggestedLetter) {
+        return hiddenWord.indexOf(suggestedLetter) != -1;
+    }
+
+    private static void drawUsedLetters(Set<Character> usedLetters) {
+        System.out.print("Использованные буквы: ");
+        for (char letter : usedLetters) {
+            System.out.print(letter + " ");
+        }
+        System.out.println();
+    }
+
+    private static boolean checkLosing(int errorCount) {
+        return errorCount >= MAX_ERRORS;
+    }
+
+    private static boolean checkWinning(String hiddenWord, Set<Character> rightLetters) {
+        for (char letter : hiddenWord.toCharArray()) {
+            if (!rightLetters.contains(letter)) return false;
+        }
+        return true;
+    }
+
+    private static void drawFinalWords(String hiddenWord, boolean isGameWon) {
+        if (!isGameWon) System.out.println("Вы проиграли! Загаданное слово: " + hiddenWord + ".");
+        else System.out.println("Вы выиграли! Загаданное слово: " + hiddenWord + ".");
+    }
+}
