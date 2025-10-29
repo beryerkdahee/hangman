@@ -132,15 +132,13 @@ public class Main {
 
     private static void processTurn() {
         char suggestedLetter = enterLetter();
-        boolean isLetterRight = isLetterInWord(suggestedLetter);
         if (usedLetters.contains(suggestedLetter)) {
             System.out.println("Вы уже указывали эту букву!");
             System.out.println();
             return;
-        } else {
-            usedLetters.add(suggestedLetter);
         }
-        if (!isLetterRight) {
+        usedLetters.add(suggestedLetter);
+        if (!isLetterInWord(suggestedLetter)) {
             errorCount++;
         } else {
             rightLetters.add(suggestedLetter);
