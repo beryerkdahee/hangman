@@ -71,6 +71,7 @@ public class Main {
         Set<Character> usedLetters = new TreeSet<>();
         while (!isGameLost && !isGameWon) {
             printHangman(errorCount);
+            System.out.println();
             printBoard(hiddenWord, rightLetters);
             if (!usedLetters.isEmpty()) printUsedLetters(usedLetters);
             char suggestedLetter = enterLetter();
@@ -89,9 +90,11 @@ public class Main {
         }
         if (isGameLost) {
             printHangman(errorCount);
+            System.out.println();
             printFinalWords(hiddenWord, false);
         } else {
             printBoard(hiddenWord, rightLetters);
+            System.out.println();
             printFinalWords(hiddenWord, true);
         }
         System.out.println();
@@ -143,8 +146,11 @@ public class Main {
     }
 
     private static void printHangman(int errorCount) {
-        System.out.println(HANGMAN_STAGES[errorCount]);
-        System.out.println();
+        if (0 <= errorCount && errorCount <= 6) {
+            System.out.println(HANGMAN_STAGES[errorCount]);
+        } else {
+            System.out.println("Ошибка! Количество ошибок должно быть от 0 до 6.");
+        }
     }
 
     private static void printBoard(String hiddenWord, Set<Character> rightLetter) {
