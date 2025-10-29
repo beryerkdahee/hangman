@@ -188,7 +188,11 @@ public class Main {
     }
 
     private static void printFinalWords(String hiddenWord, boolean isGameWon) {
-        if (!isGameWon) System.out.println("Вы проиграли! Загаданное слово: " + hiddenWord + ".");
-        else System.out.println("Вы выиграли! Загаданное слово: " + hiddenWord + ".");
+        if (!isGameWon) {
+            System.out.println("Вы проиграли! Загаданное слово: " + hiddenWord + ".");
+        }
+        else {
+            System.out.println("Вы выиграли! Загаданное слово: " + hiddenWord + ".");
+        }
     }
 }
