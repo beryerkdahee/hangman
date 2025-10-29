@@ -180,7 +180,9 @@ public class Main {
 
     private static boolean checkWinning(String hiddenWord, Set<Character> rightLetters) {
         for (char letter : hiddenWord.toCharArray()) {
-            if (!rightLetters.contains(letter)) return false;
+            if (!rightLetters.contains(letter)) {
+                return false;
+            }
         }
         return true;
     }
