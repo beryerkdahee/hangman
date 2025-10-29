@@ -137,10 +137,14 @@ public class Main {
             System.out.println("Вы уже указывали эту букву!");
             System.out.println();
             return;
+        } else {
+            usedLetters.add(suggestedLetter);
         }
-        else usedLetters.add(suggestedLetter);
-        if (!isLetterRight) errorCount++;
-        else rightLetters.add(suggestedLetter);
+        if (!isLetterRight) {
+            errorCount++;
+        } else {
+            rightLetters.add(suggestedLetter);
+        }
         System.out.println();
     }
 
@@ -157,8 +161,11 @@ public class Main {
                 continue;
             }
             char letter = input.charAt(0);
-            if ((letter >= 'а' && letter <= 'я') || letter == 'ё') return letter;
-            else System.out.println("Вы ввели не русскую букву!");
+            if ((letter >= 'а' && letter <= 'я') || letter == 'ё') {
+                return letter;
+            } else {
+                System.out.println("Вы ввели не русскую букву!");
+            }
         }
     }
 
@@ -172,8 +179,11 @@ public class Main {
 
     private static void printBoard() {
         for (char letter : hiddenWord.toCharArray()) {
-            if (rightLetters.contains(letter)) System.out.print(letter + " ");
-            else System.out.print("_ ");
+            if (rightLetters.contains(letter)) {
+                System.out.print(letter + " ");
+            } else {
+                System.out.print("_ ");
+            }
         }
         System.out.println();
         System.out.println();
@@ -207,8 +217,7 @@ public class Main {
     private static void printFinalWords(boolean isGameWon) {
         if (!isGameWon) {
             System.out.println("Вы проиграли! Загаданное слово: " + hiddenWord + ".");
-        }
-        else {
+        } else {
             System.out.println("Вы выиграли! Загаданное слово: " + hiddenWord + ".");
         }
     }
