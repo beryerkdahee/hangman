@@ -22,9 +22,9 @@ public class Main {
 
     private static void launchGame(Scanner in) {
         while (true) {
-            boolean isGameStarting = confirmGameStart(in);
-            if (isGameStarting) playGame(in);
-            else {
+            if (confirmGameStart(in)) {
+                playGame(in);
+            } else {
                 System.out.println("Выход из программы.");
                 break;
             }
