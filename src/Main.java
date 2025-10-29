@@ -24,6 +24,8 @@ public class Main {
             "— — — —\n|     |\n|     o\n|    /O\\\n|    /\n|",
             "— — — —\n|     |\n|     o\n|    /O\\\n|    / \\\n|"};
     private static final int MAX_ERRORS = 6;
+    private static final String START = "да";
+    private static final String QUIT = "нет";
     private static final String WORDS_FILE_PATH = "resources/words.txt";
 
     public static void main(String[] args) {
@@ -43,18 +45,20 @@ public class Main {
     }
 
     private static boolean confirmGameStart(Scanner in) {
-        Set<String> YES_SET = Set.of("д", "да", "y", "yes");
-        Set<String> NO_SET = Set.of("н", "нет", "n", "no");
         while (true) {
-            System.out.print("Начать новую игру? ");
+            System.out.print("Начать новую игру (да/нет)? ");
             String input = in.nextLine().trim().toLowerCase(Locale.ROOT);
             if (input.isEmpty()) {
                 System.out.println("Вы ничего не ввели!");
                 continue;
             }
-            if (YES_SET.contains(input)) return true;
-            else if (NO_SET.contains(input)) return false;
-            else System.out.println("Некорректный ввод.");
+            if (START.equalsIgnoreCase(input)) {
+                return true;
+            }
+            if (QUIT.equalsIgnoreCase(input)) {
+                return false;
+            }
+            System.out.println("Некорректный ввод.");
         }
     }
 
