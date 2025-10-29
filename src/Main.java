@@ -13,7 +13,18 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class Main {
+    private static final List<String> FALLBACK_WORDS =
+            Arrays.asList("кентавр", "виселица", "клавиатура", "пластик", "стажировка");
+    private static final String[] HANGMAN_STAGES = {
+            "— — — —\n|     |\n|\n|\n|\n|",
+            "— — — —\n|     |\n|     o\n|\n|\n|",
+            "— — — —\n|     |\n|     o\n|     O\n|\n|",
+            "— — — —\n|     |\n|     o\n|    /O\n|\n|",
+            "— — — —\n|     |\n|     o\n|    /O\\\n|\n|",
+            "— — — —\n|     |\n|     o\n|    /O\\\n|    /\n|",
+            "— — — —\n|     |\n|     o\n|    /O\\\n|    / \\\n|"};
     private static final int MAX_ERRORS = 6;
+    private static final String WORDS_FILE_PATH = "resources/words.txt";
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -89,7 +100,7 @@ public class Main {
     }
 
     private static List<String> loadWords() {
-        Path wordsFilePath = Paths.get("resources/words.txt");
+        Path wordsFilePath = Paths.get(WORDS_FILE_PATH);
         try {
             List<String> wordsFromFile = Files.readAllLines(wordsFilePath, StandardCharsets.UTF_8)
                     .stream().map(String::trim).map(String::toLowerCase)
@@ -101,7 +112,7 @@ public class Main {
             String wordsAbsolutePath = wordsFilePath.toAbsolutePath().toString();
             System.out.println("Файл со списком слов по пути \"" + wordsAbsolutePath + "\" пуст или не обнаружен. " +
                     "Будут использоваться служебные слова.");
-            return Arrays.asList("кентавр", "виселица", "клавиатура", "пластик", "стажировка");
+            return FALLBACK_WORDS;
         }
     }
 
@@ -124,15 +135,7 @@ public class Main {
     }
 
     private static void printHangman(int errorCount) {
-        String[] hangmanStages = {
-                "— — — —\n|     |\n|\n|\n|\n|",
-                "— — — —\n|     |\n|     o\n|\n|\n|",
-                "— — — —\n|     |\n|     o\n|     O\n|\n|",
-                "— — — —\n|     |\n|     o\n|    /O\n|\n|",
-                "— — — —\n|     |\n|     o\n|    /O\\\n|\n|",
-                "— — — —\n|     |\n|     o\n|    /O\\\n|    /\n|",
-                "— — — —\n|     |\n|     o\n|    /O\\\n|    / \\\n|"};
-        System.out.println(hangmanStages[errorCount]);
+        System.out.println(HANGMAN_STAGES[errorCount]);
         System.out.println();
     }
 
