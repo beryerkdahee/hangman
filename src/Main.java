@@ -23,7 +23,6 @@ public class Main {
             "— — — —\n|     |\n|     o\n|    /O\\\n|\n|",
             "— — — —\n|     |\n|     o\n|    /O\\\n|    /\n|",
             "— — — —\n|     |\n|     o\n|    /O\\\n|    / \\\n|"};
-    private static final Scanner in = new Scanner(System.in);
     private static final int MAX_ERRORS = 6;
     private static final String START = "да";
     private static final String QUIT = "нет";
@@ -31,8 +30,9 @@ public class Main {
 
     private static int errorCount;
     private static String hiddenWord;
-    private static Set<Character> rightLetters = new HashSet<>();
-    private static Set<Character> usedLetters = new TreeSet<>();
+    private static final Scanner in = new Scanner(System.in);
+    private static final Set<Character> rightLetters = new HashSet<>();
+    private static final Set<Character> usedLetters = new TreeSet<>();
 
     public static void main(String[] args) {
         launchGame();
