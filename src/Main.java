@@ -105,16 +105,20 @@ public class Main {
 
     private static List<String> loadWords() {
         Path wordsFilePath = Paths.get(WORDS_FILE_PATH);
+        String wordsFileAbsolutePath = wordsFilePath.toAbsolutePath().toString();
         try {
             List<String> wordsFromFile = Files.readAllLines(wordsFilePath, StandardCharsets.UTF_8)
                     .stream().map(String::trim).map(String::toLowerCase)
                     .filter(word -> !word.isEmpty()).toList();
-            if (wordsFromFile.isEmpty()) throw new IOException();
+            if (wordsFromFile.isEmpty()) {
+                System.out.println("Файл со списком слов по пути \"" + wordsFileAbsolutePath + "\" пуст. " +
+                        "Будут использоваться служебные слова.");
+                return FALLBACK_WORDS;
+            }
             return wordsFromFile;
 
         } catch (IOException e) {
-            String wordsAbsolutePath = wordsFilePath.toAbsolutePath().toString();
-            System.out.println("Файл со списком слов по пути \"" + wordsAbsolutePath + "\" пуст или не обнаружен. " +
+            System.out.println("Файл со списком слов по пути \"" + wordsFileAbsolutePath + "\" не обнаружен. " +
                     "Будут использоваться служебные слова.");
             return FALLBACK_WORDS;
         }
