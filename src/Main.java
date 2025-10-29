@@ -23,20 +23,20 @@ public class Main {
             "— — — —\n|     |\n|     o\n|    /O\\\n|\n|",
             "— — — —\n|     |\n|     o\n|    /O\\\n|    /\n|",
             "— — — —\n|     |\n|     o\n|    /O\\\n|    / \\\n|"};
+    private static final Scanner in = new Scanner(System.in);
     private static final int MAX_ERRORS = 6;
     private static final String START = "да";
     private static final String QUIT = "нет";
     private static final String WORDS_FILE_PATH = "resources/words.txt";
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        launchGame(in);
+        launchGame();
     }
 
-    private static void launchGame(Scanner in) {
+    private static void launchGame() {
         while (true) {
-            if (confirmGameStart(in)) {
-                playGame(in);
+            if (confirmGameStart()) {
+                playGame();
             } else {
                 System.out.println("Выход из программы.");
                 break;
@@ -44,7 +44,7 @@ public class Main {
         }
     }
 
-    private static boolean confirmGameStart(Scanner in) {
+    private static boolean confirmGameStart() {
         while (true) {
             System.out.print("Начать новую игру (да/нет)? ");
             String input = in.nextLine().trim().toLowerCase(Locale.ROOT);
@@ -62,7 +62,7 @@ public class Main {
         }
     }
 
-    private static void playGame(Scanner in) {
+    private static void playGame() {
         int errorCount = 0;
         String hiddenWord = getHiddenWord();
         boolean isGameLost = false;
@@ -73,7 +73,7 @@ public class Main {
             printHangman(errorCount);
             printBoard(hiddenWord, rightLetters);
             if (!usedLetters.isEmpty()) printUsedLetters(usedLetters);
-            char suggestedLetter = enterLetter(in);
+            char suggestedLetter = enterLetter();
             boolean isLetterRight = isLetterInWord(hiddenWord, suggestedLetter);
             if (usedLetters.contains(suggestedLetter)) {
                 System.out.println("Вы уже указывали эту букву!");
@@ -120,7 +120,7 @@ public class Main {
         }
     }
 
-    private static char enterLetter(Scanner in) {
+    private static char enterLetter() {
         while (true) {
             System.out.print("Введите предполагаемую букву: ");
             String input = in.nextLine().trim().toLowerCase(Locale.ROOT);
