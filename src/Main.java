@@ -29,6 +29,11 @@ public class Main {
     private static final String QUIT = "нет";
     private static final String WORDS_FILE_PATH = "resources/words.txt";
 
+    private static int errorCount;
+    private static String hiddenWord;
+    private static Set<Character> rightLetters = new HashSet<>();
+    private static Set<Character> usedLetters = new TreeSet<>();
+
     public static void main(String[] args) {
         launchGame();
     }
@@ -63,41 +68,26 @@ public class Main {
     }
 
     private static void playGame() {
-        int errorCount = 0;
-        String hiddenWord = getHiddenWord();
-        boolean isGameLost = false;
-        boolean isGameWon = false;
-        Set<Character> rightLetters = new HashSet<>();
-        Set<Character> usedLetters = new TreeSet<>();
-        while (!isGameLost && !isGameWon) {
-            printHangman(errorCount);
-            System.out.println();
-            printBoard(hiddenWord, rightLetters);
-            if (!usedLetters.isEmpty()) printUsedLetters(usedLetters);
-            char suggestedLetter = enterLetter();
-            boolean isLetterRight = isLetterInWord(hiddenWord, suggestedLetter);
-            if (usedLetters.contains(suggestedLetter)) {
-                System.out.println("Вы уже указывали эту букву!");
-                System.out.println();
-                continue;
-            }
-            else usedLetters.add(suggestedLetter);
-            if (!isLetterRight) errorCount++;
-            else rightLetters.add(suggestedLetter);
-            isGameLost = checkLosing(errorCount);
-            isGameWon = checkWinning(hiddenWord, rightLetters);
-            System.out.println();
+        resetGameState();
+        hiddenWord = getHiddenWord();
+        while (!isGameOver()) {
+            printGameState();
+            processTurn();
         }
-        if (isGameLost) {
-            printHangman(errorCount);
-            System.out.println();
-            printFinalWords(hiddenWord, false);
+        if (isGameLost()) {
+            printHangman();
         } else {
-            printBoard(hiddenWord, rightLetters);
-            System.out.println();
-            printFinalWords(hiddenWord, true);
+            printBoard();
         }
+        printFinalWords(isGameWon());
         System.out.println();
+    }
+
+    private static void resetGameState() {
+        errorCount = 0;
+        hiddenWord = "";
+        rightLetters.clear();
+        usedLetters.clear();
     }
 
     private static String getHiddenWord() {
@@ -127,6 +117,33 @@ public class Main {
         }
     }
 
+    private static boolean isGameOver() {
+        return isGameLost() || isGameWon();
+    }
+
+    private static void printGameState() {
+        printHangman();
+        System.out.println();
+        printBoard();
+        if (!usedLetters.isEmpty()) {
+            printUsedLetters();
+        }
+    }
+
+    private static void processTurn() {
+        char suggestedLetter = enterLetter();
+        boolean isLetterRight = isLetterInWord(suggestedLetter);
+        if (usedLetters.contains(suggestedLetter)) {
+            System.out.println("Вы уже указывали эту букву!");
+            System.out.println();
+            return;
+        }
+        else usedLetters.add(suggestedLetter);
+        if (!isLetterRight) errorCount++;
+        else rightLetters.add(suggestedLetter);
+        System.out.println();
+    }
+
     private static char enterLetter() {
         while (true) {
             System.out.print("Введите предполагаемую букву: ");
@@ -145,7 +162,7 @@ public class Main {
         }
     }
 
-    private static void printHangman(int errorCount) {
+    private static void printHangman() {
         if (0 <= errorCount && errorCount <= 6) {
             System.out.println(HANGMAN_STAGES[errorCount]);
         } else {
@@ -153,20 +170,20 @@ public class Main {
         }
     }
 
-    private static void printBoard(String hiddenWord, Set<Character> rightLetter) {
+    private static void printBoard() {
         for (char letter : hiddenWord.toCharArray()) {
-            if (rightLetter.contains(letter)) System.out.print(letter + " ");
+            if (rightLetters.contains(letter)) System.out.print(letter + " ");
             else System.out.print("_ ");
         }
         System.out.println();
         System.out.println();
     }
 
-    private static boolean isLetterInWord(String hiddenWord, char suggestedLetter) {
+    private static boolean isLetterInWord(char suggestedLetter) {
         return hiddenWord.indexOf(suggestedLetter) != -1;
     }
 
-    private static void printUsedLetters(Set<Character> usedLetters) {
+    private static void printUsedLetters() {
         System.out.print("Использованные буквы: ");
         for (char letter : usedLetters) {
             System.out.print(letter + " ");
@@ -174,11 +191,11 @@ public class Main {
         System.out.println();
     }
 
-    private static boolean checkLosing(int errorCount) {
+    private static boolean isGameLost() {
         return errorCount >= MAX_ERRORS;
     }
 
-    private static boolean checkWinning(String hiddenWord, Set<Character> rightLetters) {
+    private static boolean isGameWon() {
         for (char letter : hiddenWord.toCharArray()) {
             if (!rightLetters.contains(letter)) {
                 return false;
@@ -187,7 +204,7 @@ public class Main {
         return true;
     }
 
-    private static void printFinalWords(String hiddenWord, boolean isGameWon) {
+    private static void printFinalWords(boolean isGameWon) {
         if (!isGameWon) {
             System.out.println("Вы проиграли! Загаданное слово: " + hiddenWord + ".");
         }
