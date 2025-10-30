@@ -117,7 +117,6 @@ public class Main {
     }
 
     private static void playGame() {
-        resetGameState();
         hiddenWord = getHiddenWord();
         while (!isGameOver()) {
             printGameState();
@@ -130,6 +129,7 @@ public class Main {
         }
         printFinalWords(isGameWon());
         System.out.println();
+        resetGameState();
     }
 
     private static void resetGameState() {
