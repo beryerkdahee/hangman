@@ -18,7 +18,7 @@
 
 ## Запуск игры
 1. Клонировать репозиторий.
-2. Запустить "hangman/src/Main.java".
+2. Запустить "hangman/src/main/java/com/beryerkdahee/hangman/Main.java".
 
 ---
 
@@ -26,7 +26,7 @@
 ```
 hangman/
 ├── src/
-│   └── Main.java
+│   └── main.java.com.beryerkdahee.hangman.Main.java
 └── resources/
     └── words.txt
 ```
