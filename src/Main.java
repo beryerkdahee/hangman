@@ -16,13 +16,62 @@ public class Main {
     private static final List<String> FALLBACK_WORDS =
             Arrays.asList("кентавр", "виселица", "клавиатура", "пластик", "стажировка");
     private static final String[] HANGMAN_STAGES = {
-            "— — — —\n|     |\n|\n|\n|\n|",
-            "— — — —\n|     |\n|     o\n|\n|\n|",
-            "— — — —\n|     |\n|     o\n|     O\n|\n|",
-            "— — — —\n|     |\n|     o\n|    /O\n|\n|",
-            "— — — —\n|     |\n|     o\n|    /O\\\n|\n|",
-            "— — — —\n|     |\n|     o\n|    /O\\\n|    /\n|",
-            "— — — —\n|     |\n|     o\n|    /O\\\n|    / \\\n|"};
+            """
+            — — — —
+            |     |
+            |
+            |
+            |
+            |
+            """,
+            """
+            — — — —
+            |     |
+            |     o
+            |
+            |
+            |
+            """,
+            """
+            — — — —
+            |     |
+            |     o
+            |     O
+            |
+            |
+            """,
+            """
+            — — — —
+            |     |
+            |     o
+            |    /O
+            |
+            |
+            """,
+            """
+            — — — —
+            |     |
+            |     o
+            |    /O\\
+            |
+            |
+            """,
+            """
+            — — — —
+            |     |
+            |     o
+            |    /O\\
+            |    /
+            |
+            """,
+            """
+            — — — —
+            |     |
+            |     o
+            |    /O\\
+            |    / \\
+            |
+            """};
     private static final int MAX_ERRORS = 6;
     private static final String START = "да";
     private static final String QUIT = "нет";
@@ -123,7 +172,6 @@ public class Main {
 
     private static void printGameState() {
         printHangman();
-        System.out.println();
         printBoard();
         if (!usedLetters.isEmpty()) {
             printUsedLetters();
@@ -183,8 +231,7 @@ public class Main {
                 System.out.print("_ ");
             }
         }
-        System.out.println();
-        System.out.println();
+        System.out.println("\n");
     }
 
     private static boolean isLetterInWord(char suggestedLetter) {
