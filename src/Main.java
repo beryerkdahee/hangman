@@ -209,9 +209,8 @@ public class Main {
             char letter = input.charAt(0);
             if ((letter >= 'а' && letter <= 'я') || letter == 'ё') {
                 return letter;
-            } else {
-                System.out.println("Вы ввели не русскую букву!");
             }
+            System.out.println("Вы ввели не русскую букву!");
         }
     }
 
