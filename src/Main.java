@@ -132,13 +132,6 @@ public class Main {
         resetGameState();
     }
 
-    private static void resetGameState() {
-        errorCount = 0;
-        hiddenWord = "";
-        rightLetters.clear();
-        usedLetters.clear();
-    }
-
     private static String getHiddenWord() {
         List<String> words = loadWords();
         Random random = new Random();
@@ -170,12 +163,52 @@ public class Main {
         return isGameLost() || isGameWon();
     }
 
+    private static boolean isGameLost() {
+        return errorCount >= MAX_ERRORS;
+    }
+
+    private static boolean isGameWon() {
+        for (char letter : hiddenWord.toCharArray()) {
+            if (!rightLetters.contains(letter)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static void printGameState() {
         printHangman();
         printBoard();
         if (!usedLetters.isEmpty()) {
             printUsedLetters();
         }
+    }
+
+    private static void printHangman() {
+        if (0 <= errorCount && errorCount <= 6) {
+            System.out.println(HANGMAN_STAGES[errorCount]);
+        } else {
+            System.out.println("Ошибка! Количество ошибок должно быть от 0 до 6.");
+        }
+    }
+
+    private static void printBoard() {
+        for (char letter : hiddenWord.toCharArray()) {
+            if (rightLetters.contains(letter)) {
+                System.out.print(letter + " ");
+            } else {
+                System.out.print("_ ");
+            }
+        }
+        System.out.println("\n");
+    }
+
+    private static void printUsedLetters() {
+        System.out.print("Использованные буквы: ");
+        for (char letter : usedLetters) {
+            System.out.print(letter + " ");
+        }
+        System.out.println();
     }
 
     private static void processTurn() {
@@ -214,48 +247,8 @@ public class Main {
         }
     }
 
-    private static void printHangman() {
-        if (0 <= errorCount && errorCount <= 6) {
-            System.out.println(HANGMAN_STAGES[errorCount]);
-        } else {
-            System.out.println("Ошибка! Количество ошибок должно быть от 0 до 6.");
-        }
-    }
-
-    private static void printBoard() {
-        for (char letter : hiddenWord.toCharArray()) {
-            if (rightLetters.contains(letter)) {
-                System.out.print(letter + " ");
-            } else {
-                System.out.print("_ ");
-            }
-        }
-        System.out.println("\n");
-    }
-
     private static boolean isLetterInWord(char suggestedLetter) {
         return hiddenWord.indexOf(suggestedLetter) != -1;
-    }
-
-    private static void printUsedLetters() {
-        System.out.print("Использованные буквы: ");
-        for (char letter : usedLetters) {
-            System.out.print(letter + " ");
-        }
-        System.out.println();
-    }
-
-    private static boolean isGameLost() {
-        return errorCount >= MAX_ERRORS;
-    }
-
-    private static boolean isGameWon() {
-        for (char letter : hiddenWord.toCharArray()) {
-            if (!rightLetters.contains(letter)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static void printFinalWords(boolean isGameWon) {
@@ -265,4 +258,12 @@ public class Main {
             System.out.println("Вы выиграли! Загаданное слово: " + hiddenWord + ".");
         }
     }
+
+    private static void resetGameState() {
+        errorCount = 0;
+        hiddenWord = "";
+        rightLetters.clear();
+        usedLetters.clear();
+    }
+
 }
